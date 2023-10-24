@@ -26,6 +26,20 @@
 #include <stdint.h>
 #include <time.h>
 #include <sys/time.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+#ifndef NOTES
+    #define NOTES ""
+#endif
+
+// Random float generator
+float randomF(int min, int max, int prec){ 
+  prec = 10 * prec; 
+  return (rand() % (max * prec - min * prec + 1) + min * prec) / (float)prec; 
+}
 
 uint64_t routine1(float* M, float* O, int n, int b){
     struct timespec start, end;
@@ -54,40 +68,64 @@ uint64_t routine1(float* M, float* O, int n, int b){
 }
 
 int main(int argc, char const *argv[]){
-    const int N = 8;
-    const int B = 2;
+    const int N = 4096;
+    int B = 2;
      
     int i, j, ii;
 
     float M[N][N];
     float O[N][N];
 
+    //Retriving some info about the machine
+    char hostbuffer[256];
+    int hostname;
+ 
+    // retrieve hostname
+    hostname = gethostname(hostbuffer, sizeof(hostbuffer));
+    if (hostname == -1) {
+        printf("Error when getting hostname\n");
+    }
+
+    FILE *fp;
+    fp = fopen("resoults.csv", "a");
+
+    if(fp == NULL){
+        printf("Error opening file\n");
+    }
+
     //Populating the matrix M with random numbers
-    ii = 0;
+    srand(time(NULL));
     for(i = 0; i < N; ++i){
-        for(j = 0; j < N; ++j){
-            M[i][j] = ii;
-            ++ii;
+        for(j = 0; j < N; ++j)
+            M[i][j] = randomF(0, 1000, 3);
+    }
+    
+
+    //Printing the matrix M [ONLY FOR DEBUGGING]
+    // printf("Matrix M:\n", time);
+    // for(i = 0; i < N; ++i){
+    //     for(j = 0; j < N; ++j)
+    //         printf("%d\t", (int)M[i][j]);
+    //     printf("\n");
+    // }
+
+    uint64_t time;
+    for(B = 4; B <= 256; B*=2){
+        time = routine1((float*)M, (float*)O, N, B);
+        printf("Time: %f s\n", time/1000000.0);
+        if (fp != NULL){
+            fprintf(fp, "%d,%f,%s,%s\n", B, time/1000000.0, hostbuffer, NOTES);
         }
     }
+    
 
-    //Printing the matrix M
-    printf("Matrix M:\n", time);
-    for(i = 0; i < N; ++i){
-        for(j = 0; j < N; ++j)
-            printf("%d\t", (int)M[i][j]);
-        printf("\n");
-    }
-
-    uint64_t time = routine1((float*)M, (float*)O, N, B);
-
-    //Printing the result
-    printf("Time: %d us, Matrix O:\n", time);
-    for(i = 0; i < N; ++i){
-        for(j = 0; j < N; ++j)
-            printf("%d\t", (int)O[i][j]);
-        printf("\n");
-    }
+    //Printing the result [ONLY FOR DEBUGGING]
+    // printf("Time: %d us, Matrix O:\n", time);
+    // for(i = 0; i < N; ++i){
+    //     for(j = 0; j < N; ++j)
+    //         printf("%d\t", (int)O[i][j]);
+    //     printf("\n");
+    // }
     
     return 0;
 }
