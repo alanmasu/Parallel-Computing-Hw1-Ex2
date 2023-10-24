@@ -40,8 +40,8 @@ uint64_t routine1(float* M, float* O, int n, int b){
                 for(c = 0; c < b; ++c){
                     rM = br*b + r;
                     cM = bc*b + c;
-                    rO = n-1 - bc*b + c;
-                    cO = n-1 - br*b + r;
+                    rO = n - b - br*b + r;
+                    cO = n - b - bc*b + c;
                     O[rO*n + cO] = M[rM*n + cM];
                 }
             }
@@ -54,7 +54,7 @@ uint64_t routine1(float* M, float* O, int n, int b){
 }
 
 int main(int argc, char const *argv[]){
-    const int N = 4;
+    const int N = 8;
     const int B = 2;
      
     int i, j, ii;
@@ -75,7 +75,7 @@ int main(int argc, char const *argv[]){
     printf("Matrix M:\n", time);
     for(i = 0; i < N; ++i){
         for(j = 0; j < N; ++j)
-            printf("%f ", M[i][j]);
+            printf("%d\t", (int)M[i][j]);
         printf("\n");
     }
 
@@ -85,7 +85,7 @@ int main(int argc, char const *argv[]){
     printf("Time: %d us, Matrix O:\n", time);
     for(i = 0; i < N; ++i){
         for(j = 0; j < N; ++j)
-            printf("%f ", O[i][j]);
+            printf("%d\t", (int)O[i][j]);
         printf("\n");
     }
     
