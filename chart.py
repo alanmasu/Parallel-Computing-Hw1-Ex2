@@ -18,12 +18,14 @@ print(df)
 
 # Filter the data
 df_serial = df[df['notes'] == 'whitout-vectorization-or-prefetch']
+df_prefetch = df[df['notes'] == 'whit-prefetch']
 
 
 print(df_serial)
 
 # Create a scatter plot
 sns.lineplot(x='b', y='time', data=df_serial, label='Serial', color='red')
+sns.lineplot(x='b', y='time', data=df_prefetch, label='Prefetch', color='blue')
 
 
 # Add title and axis names
