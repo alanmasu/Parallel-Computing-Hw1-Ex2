@@ -23,9 +23,71 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <time.h>
+#include <sys/time.h>
+
+uint64_t routine1(float* M, float* O, int n, int b){
+    struct timespec start, end;
+
+    int br, bc, r, c;
+    int rM, cM, rO, cO;
+    int N_B = n/b;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    for (br = 0; br < N_B; ++br){
+        for(bc = 0; bc < N_B; ++bc){
+            for(r = 0; r < b; ++r){
+                for(c = 0; c < b; ++c){
+                    rM = br*b + r;
+                    cM = bc*b + c;
+                    rO = n-1 - bc*b + c;
+                    cO = n-1 - br*b + r;
+                    O[rO*n + cO] = M[rM*n + cM];
+                }
+            }
+        }
+    }
+    
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    return (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000;
+}
 
 int main(int argc, char const *argv[]){
+    const int N = 4;
+    const int B = 2;
+     
+    int i, j, ii;
 
+    float M[N][N];
+    float O[N][N];
+
+    //Populating the matrix M with random numbers
+    ii = 0;
+    for(i = 0; i < N; ++i){
+        for(j = 0; j < N; ++j){
+            M[i][j] = ii;
+            ++ii;
+        }
+    }
+
+    //Printing the matrix M
+    printf("Matrix M:\n", time);
+    for(i = 0; i < N; ++i){
+        for(j = 0; j < N; ++j)
+            printf("%f ", M[i][j]);
+        printf("\n");
+    }
+
+    uint64_t time = routine1((float*)M, (float*)O, N, B);
+
+    //Printing the result
+    printf("Time: %d us, Matrix O:\n", time);
+    for(i = 0; i < N; ++i){
+        for(j = 0; j < N; ++j)
+            printf("%f ", O[i][j]);
+        printf("\n");
+    }
     
     return 0;
 }
