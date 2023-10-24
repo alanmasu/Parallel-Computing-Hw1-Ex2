@@ -20,6 +20,7 @@ print(df)
 df_serial = df[df['notes'] == 'whitout-vectorization-or-prefetch']
 df_prefetch = df[df['notes'] == 'whit-prefetch']
 df_vectorization = df[df['notes'] == 'whit-prefetch-and-vectorization']
+df_only_vectorization = df[df['notes'] == 'only-vectorization']
 
 
 print(df_serial)
@@ -28,6 +29,7 @@ print(df_serial)
 sns.lineplot(x='b', y='time', data=df_serial, label='Serial', color='red')
 sns.lineplot(x='b', y='time', data=df_prefetch, label='Prefetch', color='blue')
 sns.lineplot(x='b', y='time', data=df_vectorization, label='PF + Vectrization', color='green')
+sns.lineplot(x='b', y='time', data=df_only_vectorization, label='Vectrization', color='purple')
 
 
 # Add title and axis names
