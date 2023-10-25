@@ -28,8 +28,8 @@ print(df_serial)
 # Create a scatter plot
 sns.lineplot(x='b', y='time', data=df_serial, label='Serial', color='red')
 sns.lineplot(x='b', y='time', data=df_prefetch, label='Prefetch', color='blue')
-sns.lineplot(x='b', y='time', data=df_vectorization, label='PF + Vectrization', color='green')
-sns.lineplot(x='b', y='time', data=df_only_vectorization, label='Vectrization', color='purple')
+sns.lineplot(x='b', y='time', data=df_only_vectorization, label='Vectrization', color='green')
+sns.lineplot(x='b', y='time', data=df_vectorization, label='PF + Vectrization', color='purple')
 
 
 # Add title and axis names

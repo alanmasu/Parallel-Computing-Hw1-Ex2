@@ -49,8 +49,8 @@ uint64_t routine1(float* M, float* O, int n, int b){
     int N_B = n/b;
     clock_gettime(CLOCK_MONOTONIC, &start);
     for (br = 0; br < N_B; ++br){
-            for(bc = 0; bc < N_B; ++bc){
         for(r = 0; r < b; ++r){
+            for(bc = 0; bc < N_B; ++bc){
                 for(c = 0; c < b; ++c){
                     rM = br*b + r;
                     cM = bc*b + c;
